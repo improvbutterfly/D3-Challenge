@@ -18,7 +18,7 @@ var height = svgHeight - margin.top - margin.bottom;
 // and shift the latter by left and top margins.
 // =================================
 var svg = d3
-  .select("body")
+  .select("#scatter")
   .append("svg")
   .attr("width", svgWidth)
   .attr("height", svgHeight);
@@ -39,9 +39,7 @@ var chosenYAxis = "healthcare";
 function xScale(censusData, chosenXAxis) {
   // create scales
   var xLinearScale = d3.scaleLinear()
-    .domain([d3.min(censusData, d => d[chosenXAxis]) * 0.8,
-      d3.max(censusData, d => d[chosenXAxis]) * 1.2
-    ])
+    .domain([0, d3.max(censusData, d => d[chosenXAxis]) * 1.2])
     .range([0, width]);
 
   return xLinearScale;
@@ -49,13 +47,11 @@ function xScale(censusData, chosenXAxis) {
 }
 
 // function used for updating y-scale var upon click on axis label
-function xScale(censusData, chosenYAxis) {
+function yScale(censusData, chosenYAxis) {
   // create scales
   var yLinearScale = d3.scaleLinear()
-    .domain([d3.min(censusData, d => d[chosenYAxis]) * 0.8,
-      d3.max(censusData, d => d[chosenYAxis]) * 1.2
-    ])
-    .range([0, width]);
+    .domain([0, d3.max(censusData, d => d[chosenYAxis]) * 1.2])
+    .range([height, 0]);
 
   return yLinearScale;
 
@@ -105,13 +101,47 @@ function renderYCircles(circlesGroup, newYScale, chosenYAxis) {
   return circlesGroup;
 }
 
+// function used for updating circles group with new tooltip for x
+function updateXToolTip(chosenXAxis, circlesGroup) {
+
+}
+
+// function used for updating circles group with new tooltip for y
+function updateYToolTip(chosenYAxis, circlesGroup) {
+
+}
+
 // Import data from the csv file
 // =================================
-d3.csv("assets/data/data.csv").then(function(censusData) {
-	// data stored as: 
-	// id,state,abbr,poverty,povertyMoe,age,ageMoe,income,incomeMoe,healthcare,healthcareLow,
-	// healthcareHigh,obesity,obesityLow,obesityHigh,smokes,smokesLow,smokesHigh,-0.385218228
+d3.csv("assets/data/data.csv").then(function(censusData, err) {
+  if (err) throw err;
+
+  // N.B. data stored as: 
+  // id,state,abbr,poverty,povertyMoe,age,ageMoe,income,incomeMoe,healthcare,healthcareLow,
+  // healthcareHigh,obesity,obesityLow,obesityHigh,smokes,smokesLow,smokesHigh,-0.385218228
+
+  // xLinearScale function above csv import
+  var xLinearScale = xScale(censusData, chosenXAxis);
+
+  // yLinearScale function above csv import
+  var yLinearScale = yScale(censusData, chosenYAxis);
+
+  // Create initial axis functions
+  var bottomAxis = d3.axisBottom(xLinearScale);
+  var leftAxis = d3.axisLeft(yLinearScale);
+
+  // append x axis
+  var xAxis = chartGroup.append("g")
+    .classed("x-axis", true)
+    .attr("transform", `translate(0, ${height})`)
+    .call(bottomAxis);
+
+  // append y axis
+  chartGroup.append("g")
+    .call(leftAxis);
 
 
 
-};
+}).catch(function(error) {
+  console.log(error);
+});
