@@ -151,7 +151,35 @@ d3.csv("assets/data/data.csv").then(function(censusData, err) {
     .attr("fill", "pink")
     .attr("opacity", ".5");
 
+  // Create group for x-axis labels
+  var xLabelsGroup = chartGroup.append("g")
+    .attr("transform", `translate(${width / 2}, ${height + 20})`);
 
+  var povertyLabel = xLabelsGroup.append("text")
+    .attr("x", 0)
+    .attr("y", 20)
+    .attr("value", "poverty") // value to grab for event listener
+    .classed("active", true)
+    .text("Poverty (%)");
+
+  var ageLabel = xLabelsGroup.append("text")
+    .attr("x", 0)
+    .attr("y", 40)
+    .attr("value", "ageMoe") // value to grab for event listener
+    .classed("inactive", true)
+    .text("Age (Median)");
+
+  // Create group for y-axis labels
+  var yLabelsGroup = chartGroup.append("g")
+    .attr("transform", "rotate(-90)");
+
+
+  var healthcareLabel = yLabelsGroup.append("text")
+    .attr("y", 0 - margin.left)
+    .attr("x", 0 - (height / 2))
+    .attr("dy", "1em")
+    .classed("active", true)
+    .text("Lacks Healthcare (%)");
 
 }).catch(function(error) {
   console.log(error);
