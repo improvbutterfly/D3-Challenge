@@ -149,7 +149,18 @@ d3.csv("assets/data/data.csv").then(function(censusData, err) {
     .attr("cy", d => yLinearScale(d[chosenYAxis]))
     .attr("r", 20)
     .attr("fill", "pink")
-    .attr("opacity", ".5");
+    .attr("opacity", ".5")
+    .classed("stateCircle", true)
+
+  // append state labels on circles
+  var stateGroup = chartGroup.append("g")
+    .data(censusData)
+    .enter()
+    .append("text")
+    .attr("x", d => xLinearScale(d[chosenXAxis]))
+    .attr("y", d => yLinearScale(d[chosenYAxis]))
+    .classed("stateText", true)
+    .text(d => d.abbr);
 
   // Create group for x-axis labels
   var xLabelsGroup = chartGroup.append("g")
