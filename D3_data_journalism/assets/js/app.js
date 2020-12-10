@@ -39,7 +39,7 @@ var chosenYAxis = "healthcare";
 function xScale(censusData, chosenXAxis) {
   // create scales
   var xLinearScale = d3.scaleLinear()
-    .domain([0, d3.max(censusData, d => d[chosenXAxis]) * 1.2])
+    .domain([d3.min(censusData, d => d[chosenXAxis] * 0.8), d3.max(censusData, d => d[chosenXAxis] * 1.1)])
     .range([0, width]);
 
   return xLinearScale;
@@ -50,7 +50,7 @@ function xScale(censusData, chosenXAxis) {
 function yScale(censusData, chosenYAxis) {
   // create scales
   var yLinearScale = d3.scaleLinear()
-    .domain([0, d3.max(censusData, d => d[chosenYAxis]) * 1.2])
+    .domain([d3.min(censusData, d => d[chosenYAxis] * 0.5), d3.max(censusData, d => d[chosenYAxis] * 1.1)])
     .range([height, 0]);
 
   return yLinearScale;
@@ -139,6 +139,17 @@ d3.csv("assets/data/data.csv").then(function(censusData, err) {
   // append y axis
   chartGroup.append("g")
     .call(leftAxis);
+
+  // append initial circles
+  var circlesGroup = chartGroup.selectAll("circle")
+    .data(censusData)
+    .enter()
+    .append("circle")
+    .attr("cx", d => xLinearScale(d[chosenXAxis]))
+    .attr("cy", d => yLinearScale(d[chosenYAxis]))
+    .attr("r", 20)
+    .attr("fill", "pink")
+    .attr("opacity", ".5");
 
 
 
