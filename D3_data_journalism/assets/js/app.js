@@ -291,7 +291,7 @@ d3.csv("assets/data/data.csv").then(function(censusData, err) {
         // replaces chosenXAxis with value
         chosenXAxis = value;
 
-        console.log(chosenXAxis)
+        //console.log(chosenXAxis)
 
         // functions here found above csv import
         // updates x scale for new data
@@ -353,7 +353,7 @@ d3.csv("assets/data/data.csv").then(function(censusData, err) {
         // replaces chosenXAxis with value
         chosenYAxis = value;
 
-        console.log(chosenYAxis)
+        //console.log(chosenYAxis)
 
         // functions here found above csv import
         // updates x scale for new data
