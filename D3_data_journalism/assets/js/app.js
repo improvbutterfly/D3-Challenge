@@ -1,13 +1,13 @@
 // Set up the chart
 //= ================================
-var svgWidth = 960;
+var svgWidth = 700;
 var svgHeight = 500;
 
 var margin = {
   top: 20,
   right: 40,
-  bottom: 60,
-  left: 50
+  bottom: 80,
+  left: 80
 };
 
 var width = svgWidth - margin.left - margin.right;
@@ -147,18 +147,16 @@ d3.csv("assets/data/data.csv").then(function(censusData, err) {
     .append("circle")
     .attr("cx", d => xLinearScale(d[chosenXAxis]))
     .attr("cy", d => yLinearScale(d[chosenYAxis]))
-    .attr("r", 20)
-    .attr("fill", "pink")
-    .attr("opacity", ".5")
-    .classed("stateCircle", true)
+    .attr("r", 16)
+    .classed("stateCircle", true);
 
   // append state labels on circles
-  var stateGroup = chartGroup.append("g")
+  var stateGroup = chartGroup.selectAll("text")
     .data(censusData)
     .enter()
     .append("text")
-    .attr("x", d => xLinearScale(d[chosenXAxis]))
-    .attr("y", d => yLinearScale(d[chosenYAxis]))
+    .attr("x", d => xLinearScale(d[chosenXAxis])+1)
+    .attr("y", d => yLinearScale(d[chosenYAxis])+4)
     .classed("stateText", true)
     .text(d => d.abbr);
 
@@ -171,7 +169,7 @@ d3.csv("assets/data/data.csv").then(function(censusData, err) {
     .attr("y", 20)
     .attr("value", "poverty") // value to grab for event listener
     .classed("active", true)
-    .text("Poverty (%)");
+    .text("In Poverty (%)");
 
   var ageLabel = xLabelsGroup.append("text")
     .attr("x", 0)
@@ -180,17 +178,41 @@ d3.csv("assets/data/data.csv").then(function(censusData, err) {
     .classed("inactive", true)
     .text("Age (Median)");
 
+  var ageLabel = xLabelsGroup.append("text")
+    .attr("x", 0)
+    .attr("y", 60)
+    .attr("value", "incomeMoe") // value to grab for event listener
+    .classed("inactive", true)
+    .text("Household Income (Median)");
+
   // Create group for y-axis labels
   var yLabelsGroup = chartGroup.append("g")
     .attr("transform", "rotate(-90)");
 
 
   var healthcareLabel = yLabelsGroup.append("text")
+    .attr("y", 0 - margin.left + 40)
+    .attr("x", 0 - (height / 2))
+    .attr("dy", "1em")
+    .attr("value", "healthcare") // value to grab for event listener
+    .classed("active", true)
+    .text("Lacks Healthcare (%)");
+
+  var smokesLabel = yLabelsGroup.append("text")
+    .attr("y", 0 - margin.left + 20)
+    .attr("x", 0 - (height / 2))
+    .attr("dy", "1em")
+    .attr("value", "smokes") // value to grab for event listener
+    .classed("inactive", true)
+    .text("Smokes (%)");
+
+  var obesityLabel = yLabelsGroup.append("text")
     .attr("y", 0 - margin.left)
     .attr("x", 0 - (height / 2))
     .attr("dy", "1em")
-    .classed("active", true)
-    .text("Lacks Healthcare (%)");
+    .attr("value", "obesity") // value to grab for event listener
+    .classed("inactive", true)
+    .text("Obesity (%)");
 
 }).catch(function(error) {
   console.log(error);
