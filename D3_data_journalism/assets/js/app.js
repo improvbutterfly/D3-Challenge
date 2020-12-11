@@ -143,10 +143,16 @@ function updateToolTip(chosenXAxis, chosenYAxis, circlesGroup, stateGroup) {
 
   circlesGroup.on("mouseover", function(data) {
     toolTip.show(data, this);
+    d3.select(this)
+      .classed("circleActive", true)
+      .classed("stateCircle", false);
   })
     // onmouseout event
     .on("mouseout", function(data) {
       toolTip.hide(data);
+    d3.select(this)
+      .classed("circleActive", false)
+      .classed("stateCircle", true);
     });
 
   stateGroup.on("mouseover", function(data) {
@@ -196,16 +202,25 @@ d3.csv("assets/data/data.csv").then(function(censusData, err) {
     .append("circle")
     .attr("cx", d => xLinearScale(d[chosenXAxis]))
     .attr("cy", d => yLinearScale(d[chosenYAxis]))
-    .attr("r", 16)
+    .attr("r", 10)
     .classed("stateCircle", true);
 
+    // Create mouseover listeners for circles
+/*    circlesGroup.on("click", function() {
+      // get value of selection
+      d3.select(this)
+        .classed("circleActive", true)
+        .classed("stateCircle", false);
+	});*/
+
   // append state labels on circles
-  var stateGroup = chartGroup.selectAll("text")
+  var stateGroup = chartGroup.selectAll(".stateText")
     .data(censusData)
     .enter()
     .append("text")
     .attr("x", d => xLinearScale(d[chosenXAxis])+1)
-    .attr("y", d => yLinearScale(d[chosenYAxis])+4)
+    .attr("y", d => yLinearScale(d[chosenYAxis])+3)
+    .attr("font-size", "6pt")
     .classed("stateText", true)
     .text(d => d.abbr);
 
