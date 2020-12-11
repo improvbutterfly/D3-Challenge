@@ -6,8 +6,8 @@ var svgHeight = 500;
 var margin = {
   top: 20,
   right: 40,
-  bottom: 80,
-  left: 80
+  bottom: 85,
+  left: 85
 };
 
 var width = svgWidth - margin.left - margin.right;
@@ -110,7 +110,7 @@ function renderYCircles(circlesGroup, stateGroup, newYScale, chosenYAxis) {
 }
 
 // function used for updating circles group with new tooltip
-function updateToolTip(chosenXAxis, chosenYAxis, circlesGroup) {
+function updateToolTip(chosenXAxis, chosenYAxis, circlesGroup, stateGroup) {
   var xLabel;
   var yLabel;
 
@@ -134,7 +134,7 @@ function updateToolTip(chosenXAxis, chosenYAxis, circlesGroup) {
 
   var toolTip = d3.tip()
     .attr("class", "d3-tip")
-    .offset([60, -60])
+    .offset([100, -60])
     .html(function(d) {
       return (`<strong>${d.state}</strong><br>${yLabel} ${d[chosenYAxis]}<br>${xLabel} ${d[chosenXAxis]}`);
     });
@@ -145,11 +145,19 @@ function updateToolTip(chosenXAxis, chosenYAxis, circlesGroup) {
     toolTip.show(data, this);
   })
     // onmouseout event
-    .on("mouseout", function(data, index) {
+    .on("mouseout", function(data) {
       toolTip.hide(data);
     });
 
-  return circlesGroup;
+  stateGroup.on("mouseover", function(data) {
+    toolTip.show(data, this);
+  })
+    // onmouseout event
+    .on("mouseout", function(data) {
+      toolTip.hide(data);
+    });
+
+  return circlesGroup, stateGroup;
 }
 
 // Import data from the csv file
@@ -231,7 +239,7 @@ d3.csv("assets/data/data.csv").then(function(censusData, err) {
     .attr("transform", "rotate(-90)");
 
   var healthcareLabel = yLabelsGroup.append("text")
-    .attr("y", 0 - margin.left + 40)
+    .attr("y", 0 - margin.left + 45)
     .attr("x", 0 - (height / 2))
     .attr("dy", "1em")
     .attr("value", "healthcare") // value to grab for event listener
@@ -239,7 +247,7 @@ d3.csv("assets/data/data.csv").then(function(censusData, err) {
     .text("Lacks Healthcare (%)");
 
   var smokesLabel = yLabelsGroup.append("text")
-    .attr("y", 0 - margin.left + 20)
+    .attr("y", 0 - margin.left + 25)
     .attr("x", 0 - (height / 2))
     .attr("dy", "1em")
     .attr("value", "smokes") // value to grab for event listener
@@ -247,7 +255,7 @@ d3.csv("assets/data/data.csv").then(function(censusData, err) {
     .text("Smokes (%)");
 
   var obesityLabel = yLabelsGroup.append("text")
-    .attr("y", 0 - margin.left)
+    .attr("y", 0 - margin.left + 5)
     .attr("x", 0 - (height / 2))
     .attr("dy", "1em")
     .attr("value", "obesity") // value to grab for event listener
@@ -255,7 +263,7 @@ d3.csv("assets/data/data.csv").then(function(censusData, err) {
     .text("Obesity (%)");
 
   // updateToolTip function above csv import
-  var circlesGroup = updateToolTip(chosenXAxis, chosenYAxis, circlesGroup);
+  var circlesGroup, stateGroup = updateToolTip(chosenXAxis, chosenYAxis, circlesGroup, stateGroup);
   // Need to check if this works #HELP
 
   // x axis labels event listener
@@ -281,7 +289,7 @@ d3.csv("assets/data/data.csv").then(function(censusData, err) {
         circlesGroup, stateGroup = renderXCircles(circlesGroup, stateGroup, xLinearScale, chosenXAxis);
 
         // updates tooltips with new info
-        circlesGroup = updateToolTip(chosenXAxis, chosenYAxis, circlesGroup);
+        circlesGroup, stateGroup = updateToolTip(chosenXAxis, chosenYAxis, circlesGroup, stateGroup);
 
         // changes classes to change bold text
         if (chosenXAxis === "poverty") {
@@ -343,7 +351,7 @@ d3.csv("assets/data/data.csv").then(function(censusData, err) {
         circlesGroup, stateGroup = renderYCircles(circlesGroup, stateGroup, yLinearScale, chosenYAxis);
 
         // updates tooltips with new info
-        circlesGroup = updateToolTip(chosenXAxis, chosenYAxis, circlesGroup);
+        circlesGroup, stateGroup = updateToolTip(chosenXAxis, chosenYAxis, circlesGroup, stateGroup);
 
         // changes classes to change bold text
         if (chosenYAxis === "healthcare") {
