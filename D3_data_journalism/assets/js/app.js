@@ -114,29 +114,31 @@ function updateToolTip(chosenXAxis, chosenYAxis, circlesGroup, stateGroup) {
   var xLabel;
   var yLabel;
 
-  if (chosenXAxis === "poverty") {
-    xLabel = "In Poverty (%):";
-  }
-  else if (chosenXAxis === "age")
-    xLabel = "Age (Median):";
-  else {
-    xLabel = "Household Income (Median):";
-  }
-
-  if (chosenYAxis === "healthcare") {
-    yLabel = "Lacks Healthcare (%):";
-  }
-  else if (chosenYAxis === "smokes")
-    yLabel = "Smokes (%):";
-  else {
-    yLabel = "Obesity (%):";
-  }
-
   var toolTip = d3.tip()
     .attr("class", "d3-tip")
     .offset([100, -60])
     .html(function(d) {
-      return (`<strong>${d.state}</strong><br>${yLabel} ${d[chosenYAxis]}<br>${xLabel} ${d[chosenXAxis]}`);
+      // Create labels for the different options
+	  if (chosenXAxis === "poverty") {
+	    xLabel = `Poverty: ${d[chosenXAxis]}%`;
+	  }
+	  else if (chosenXAxis === "age")
+	    xLabel = `Age (Median): ${d[chosenXAxis]}`;
+	  else {
+	  	// create variable for income so we can format it with commas
+	  	var medianIncome = d[chosenXAxis];
+	    xLabel = `Household Income (Median): $${medianIncome}`;
+	  }
+
+	  if (chosenYAxis === "healthcare") {
+	    yLabel = "Lacks Healthcare:";
+	  }
+	  else if (chosenYAxis === "smokes")
+	    yLabel = "Smokes:";
+	  else {
+	    yLabel = "Obesity:";
+	  }
+      return (`<strong>${d.state}</strong><br>${yLabel} ${d[chosenYAxis]}%<br>${xLabel}`);
     });
 
   chartGroup.call(toolTip);
