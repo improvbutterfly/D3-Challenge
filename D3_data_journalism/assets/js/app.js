@@ -123,11 +123,13 @@ function updateToolTip(chosenXAxis, chosenYAxis, circlesGroup, stateGroup) {
 	    xLabel = `Poverty: ${d[chosenXAxis]}%`;
 	  }
 	  else if (chosenXAxis === "age")
-	    xLabel = `Age (Median): ${d[chosenXAxis]}`;
+	    xLabel = `Median Age: ${d[chosenXAxis]}`;
 	  else {
+	  	// create this to format number
+	  	var nf = new Intl.NumberFormat();
 	  	// create variable for income so we can format it with commas
-	  	var medianIncome = d[chosenXAxis];
-	    xLabel = `Household Income (Median): $${medianIncome}`;
+	  	var medianIncome = nf.format(d[chosenXAxis]);
+	    xLabel = `Median Household Income: $${medianIncome}`;
 	  }
 
 	  if (chosenYAxis === "healthcare") {
